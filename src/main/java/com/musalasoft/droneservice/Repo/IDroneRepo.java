@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface DroneRepo extends CrudRepository<Drones,Integer>
+public interface IDroneRepo extends CrudRepository<Drones,Integer>
 {
 
 }
