@@ -14,6 +14,8 @@ public interface DroneService {
     public List<Medication2> viewDroneMedicationItems(String droneId);
     public Drone findDroneBySerialNumber(String droneId);
     public List<Drone> getAllDrones();
+    public List<DroneRespnse>checkAvailaDronesForLoading();
+    public String checkDroneBatteryLevelForDrone(String serialNumber);
     //public void setDroneBatteryLimit(Drone drone);
 
 }

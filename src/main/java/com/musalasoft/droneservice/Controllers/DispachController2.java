@@ -26,5 +26,17 @@ public class DispachController2 {
        DroneRespnse respnse= droneService.loadDroneWithMedicationItems(id, medication2List);
        return new ResponseEntity<DroneRespnse>((respnse), null, HttpStatus.OK);
     }
+    @GetMapping("/availabledrones")
+    public ResponseEntity<List<DroneRespnse>>checkAvailableDronesForLoading(){
+        List<DroneRespnse> droneRespnses = droneService.checkAvailaDronesForLoading();
+        return new ResponseEntity<List<DroneRespnse>>((droneRespnses), null, HttpStatus.OK);
+    }
+
+    @GetMapping("/drone/batterylevel/id/{id}")
+    public ResponseEntity<String>checkDroneBatteryLevel(@PathVariable String id){
+        String batteryLevel = droneService.checkDroneBatteryLevelForDrone(id);
+        return new ResponseEntity<>((batteryLevel), null, HttpStatus.OK);
+    }
+
 
 }
