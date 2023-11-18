@@ -3,6 +3,7 @@ package com.musalasoft.droneservice.Models;
 import com.musalasoft.droneservice.utils.ScheduledTasks;
 import com.sun.istack.NotNull;
 import lombok.Data;
+import lombok.NonNull;
 
 import javax.naming.LimitExceededException;
 import javax.persistence.*;
@@ -22,10 +23,14 @@ public class Drone {
     private int weight;
     @Column(nullable = false)
     private String batteryCapacity;
+
+    
+    @NonNull
     @Enumerated(EnumType.STRING)
     // This is a default state of the drone
     private State state;
-    @NotNull
+    
+    @NonNull
     @Enumerated(EnumType.STRING)
     private Model model;
     @OneToMany
