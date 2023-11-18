@@ -22,7 +22,7 @@ public class DispachController2 {
         return new ResponseEntity<Drone>((drone2), null, HttpStatus.CREATED);
     }
     @PutMapping("/loadMedications/id/{id}")
-    public ResponseEntity<DroneRespnse> loadDroneWithMedicationItems(@PathVariable Long id, @RequestBody List<Medication2> medication2List){
+    public ResponseEntity<DroneRespnse> loadDroneWithMedicationItems(@PathVariable String id, @RequestBody List<Medication2> medication2List){
        DroneRespnse respnse= droneService.loadDroneWithMedicationItems(id, medication2List);
        return new ResponseEntity<DroneRespnse>((respnse), null, HttpStatus.OK);
     }

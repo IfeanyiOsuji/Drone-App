@@ -11,13 +11,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTasks {
+    Drone drone;
+    public ScheduledTasks(){}
+     public ScheduledTasks(Drone drone){
+        this.drone = drone;
+     }
 
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Scheduled(fixedRate = 5000)
-    public void reportDroneBatteryCapacity(Drone drone) {
-        log.info("Drone with serial number {} has a battery capacity of {} as at {}",drone.getSerialNumber(),drone.getBatteryCapacity(), dateFormat.format(new Date()));
+    public void reportDroneBatteryCapacity(){
+        
+        
+        if(this.drone != null)
+        log.info("Drone with serial number {} has a battery capacity of {} as at {}",this.drone.getSerialNumber(),this.drone.getBatteryCapacity(), dateFormat.format(new Date()));
+        
     }
 }
