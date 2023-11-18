@@ -24,7 +24,7 @@ private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Override
-    @Scheduled(fixedRate = 5000000)
+    @Scheduled(fixedRate = 300000)
     public void setDroneBatteryLimit() {
         Iterable<Drone>drones = droneRepo.findAll();
         for(Drone drone : drones){

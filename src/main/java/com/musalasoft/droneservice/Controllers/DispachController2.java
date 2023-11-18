@@ -38,5 +38,10 @@ public class DispachController2 {
         return new ResponseEntity<>((batteryLevel), null, HttpStatus.OK);
     }
 
+    @GetMapping("/medications/drone/id/{id}")
+    public ResponseEntity<List<Medication2>>viewDroneMedicationItems(@PathVariable String id){
+        return new ResponseEntity<>((droneService.viewDroneMedicationItems(id)), null, HttpStatus.OK);
+    }
+
 
 }
