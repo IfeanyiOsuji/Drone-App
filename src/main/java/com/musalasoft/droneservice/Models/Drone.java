@@ -8,14 +8,15 @@ import javax.naming.LimitExceededException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "drones")
 public class Drone {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "serial_number")
-    private Long serialNumber;
+    private String serialNumber;
 
 
     private int weight;
@@ -31,19 +32,22 @@ public class Drone {
     private List<Medication2> medications = new ArrayList<>();
 
     public Drone(int weight,Model model) {
+        this.serialNumber = UUID.randomUUID().toString().substring(25);
         this.weight = weight;
         this.state = State.IDLE;
         this.model = model;
+
     }
     protected Drone (){
+        this.serialNumber = UUID.randomUUID().toString().substring(25);
         this.state = State.IDLE;
     }
 
     public void setBatteryCapacity(int batteryCapacity){
         this.batteryCapacity =Integer.toString(batteryCapacity) +"%";
     }
-    public void setSerialNumber(Long serialNumber) throws LimitExceededException {
-        if(Long.toString(serialNumber).length() > 100)
+    public void setSerialNumber(String serialNumber) throws LimitExceededException {
+        if(serialNumber.length() > 100)
             throw new LimitExceededException("length exceeded");
         this.serialNumber = serialNumber;
 
@@ -71,7 +75,7 @@ public class Drone {
         return medications;
     }
 
-    public Long getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
     public Model getModel(){
@@ -82,28 +86,28 @@ public class Drone {
         this.weight = weight;
     }
 
-    public void setDroneBatteryLimit(){
-        int batterLimit = Integer.parseInt(this.getBatteryCapacity().substring(0, this.getBatteryCapacity().length()-1));
-        //Calendar now = Calendar.getInstance();
-        while(batterLimit > 0){
-            try {
-                if (this.getState().equals(State.IDLE)) {
-                    Thread.sleep(50000000);
-                    this.setBatteryCapacity(batterLimit - 1);
-                }
-                if (this.getState().equals(State.LOADING)) {
-                    Thread.sleep(5000);
-                    this.setBatteryCapacity(batterLimit - 3);
-                }
-                if (this.getState().equals(State.LOADED)) {
-                    Thread.sleep(5000);
-                    this.setBatteryCapacity(batterLimit - 4);
-                }
-            }catch (Exception ex){}
-        }
-        ScheduledTasks task= new ScheduledTasks();
-        task.reportDroneBatteryCapacity(this);
-    }
+    // public void setDroneBatteryLimit(){
+    //     int batterLimit = Integer.parseInt(this.getBatteryCapacity().substring(0, this.getBatteryCapacity().length()-1));
+    //     //Calendar now = Calendar.getInstance();
+    //     while(batterLimit > 0){
+    //         try {
+    //             if (this.getState().equals(State.IDLE)) {
+    //                 Thread.sleep(50000000);
+    //                 this.setBatteryCapacity(batterLimit - 1);
+    //             }
+    //             if (this.getState().equals(State.LOADING)) {
+    //                 Thread.sleep(5000);
+    //                 this.setBatteryCapacity(batterLimit - 3);
+    //             }
+    //             if (this.getState().equals(State.LOADED)) {
+    //                 Thread.sleep(5000);
+    //                 this.setBatteryCapacity(batterLimit - 4);
+    //             }
+    //         }catch (Exception ex){}
+    //     }
+    //     ScheduledTasks task= new ScheduledTasks(this);
+    //     task.reportDroneBatteryCapacity();
+    // }
 
     @Override
     public String toString() {

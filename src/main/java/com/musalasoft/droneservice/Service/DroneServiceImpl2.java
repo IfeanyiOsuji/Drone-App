@@ -15,6 +15,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
+import javax.naming.LimitExceededException;
 @Slf4j
 @Service
 public class DroneServiceImpl2 implements DroneService{
@@ -24,11 +27,12 @@ public class DroneServiceImpl2 implements DroneService{
     private MedicationService medicationService;
     @Override
     public Drone registerDrone(Drone drone) {
+       
         return droneRepo.save(drone);
     }
 
     @Override
-    public DroneRespnse loadDroneWithMedicationItems(Long droneSerialNumber, List<Medication2> medications) {
+    public DroneRespnse loadDroneWithMedicationItems(String droneSerialNumber, List<Medication2> medications) {
        medicationService.saveAllMedications(medications);
         Optional<Drone>optional = droneRepo.findById(droneSerialNumber);
         if(optional.isPresent()){
@@ -47,6 +51,7 @@ public class DroneServiceImpl2 implements DroneService{
 
                 }else log.info("Drone with serial number {} not available", drone.getSerialNumber());
             });
+            droneRepo.save(drone);
         }
         else throw new NullPointerException("drone with id "+droneSerialNumber+" not found");
         DroneRespnse respnse = new DroneRespnse();
@@ -60,8 +65,10 @@ public class DroneServiceImpl2 implements DroneService{
         return respnse;
     }
 
+    
+
     @Override
-    public List<Medication2> viewDroneMedicationItems(Long droneSerialNumber) {
+    public List<Medication2> viewDroneMedicationItems(String droneSerialNumber) {
         Optional <Drone> optional = droneRepo.findById(droneSerialNumber);
         if(!optional.isPresent()){
             throw new NullPointerException("drone with id "+droneSerialNumber+" not found");
@@ -71,7 +78,7 @@ public class DroneServiceImpl2 implements DroneService{
     }
 
     @Override
-    public Drone findDroneBySerialNumber(Long droneSerialNumber) {
+    public Drone findDroneBySerialNumber(String droneSerialNumber) {
         Optional<Drone>optional = droneRepo.findById(droneSerialNumber);
         if(optional.isPresent())
             return optional.get();
@@ -96,30 +103,43 @@ public class DroneServiceImpl2 implements DroneService{
     }
 
     public int getDroneBatteryLevel(Drone drone){
+        Optional optional = droneRepo.findById(drone.getSerialNumber());
+        if(optional.isPresent()){
         String batteryLevel = drone.getBatteryCapacity().substring(0, drone.getBatteryCapacity().length()-1);
          return  Integer.parseInt(batteryLevel);
+        }
+        else throw new NullPointerException("drone with serial number "+ drone.getSerialNumber() + " not found");
     }
 
-    public void setDroneBatteryLimit(Drone drone){
-        //Calendar now = Calendar.getInstance();
-        while(getDroneBatteryLevel(drone) > 0){
-            try {
-                if (drone.getState().equals(State.IDLE)) {
-                    Thread.sleep(50000000);
-                    drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 1);
-                }
-                if (drone.getState().equals(State.LOADING)) {
-                    Thread.sleep(5000);
-                    drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 3);
-                }
-                if (drone.getState().equals(State.LOADED)) {
-                    Thread.sleep(5000);
-                    drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 4);
-                }
-            }catch (Exception ex){}
-        }
-        ScheduledTasks task= new ScheduledTasks();
-        task.reportDroneBatteryCapacity(drone);
+    // public void setDroneBatteryLimit(Drone drone){
+    //     //Calendar now = Calendar.getInstance();
+    //     while(getDroneBatteryLevel(drone) > 0){
+    //         try {
+    //             if (drone.getState().equals(State.IDLE)) {
+    //                 Thread.sleep(50000000);
+    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 1);
+    //             }
+    //             if (drone.getState().equals(State.LOADING)) {
+    //                 Thread.sleep(5000);
+    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 3);
+    //             }
+    //             if (drone.getState().equals(State.LOADED)) {
+    //                 Thread.sleep(5000);
+    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 4);
+    //             }
+    //             droneRepo.save(drone);
+    //         }catch (Exception ex){}
+    //     }
+    //     ScheduledTasks task= new ScheduledTasks(drone);
+    //     task.reportDroneBatteryCapacity();
+    // }
+    
+
+    @Override
+    public List<Drone> getAllDrones() {
+        // TODO Auto-generated method stub
+        return droneRepo.findAll();
+       // throw new UnsupportedOperationException("Unimplemented method 'getAllDrones'");
     }
 
 }

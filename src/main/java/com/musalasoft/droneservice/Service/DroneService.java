@@ -10,8 +10,10 @@ import java.util.List;
 @Service
 public interface DroneService {
     public Drone registerDrone(Drone drone);
-    public DroneRespnse loadDroneWithMedicationItems(Long droneId, List<Medication2> medications);
-    public List<Medication2> viewDroneMedicationItems(Long droneId);
-    public Drone findDroneBySerialNumber(Long droneId);
+    public DroneRespnse loadDroneWithMedicationItems(String droneId, List<Medication2> medications);
+    public List<Medication2> viewDroneMedicationItems(String droneId);
+    public Drone findDroneBySerialNumber(String droneId);
+    public List<Drone> getAllDrones();
+    //public void setDroneBatteryLimit(Drone drone);
 
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DroneRespnse {
-    private Long serialNumber;
+    private String serialNumber;
 
     private int weight;
 
@@ -25,11 +25,11 @@ public class DroneRespnse {
     private Model model;
     private List<Medication2> medications = new ArrayList<>();
 
-    public Long getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(Long serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
