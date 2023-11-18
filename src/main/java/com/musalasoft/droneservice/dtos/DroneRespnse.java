@@ -72,6 +72,13 @@ public class DroneRespnse {
     public void setMedications(List<Medication2> medications) {
         this.medications = medications;
     }
+    public DroneRespnse(String serialNumber, int weight, String batteryCapacity, State state, Model model){
+        this.serialNumber = serialNumber;
+        this.weight = weight;
+        this.batteryCapacity = batteryCapacity;
+        this.state = state;
+    }
+    public DroneRespnse (){}
 
     @Override
     public String toString() {

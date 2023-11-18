@@ -39,7 +39,7 @@ public class DroneServiceImpl2 implements DroneService{
             Drone drone = optional.get();
 
             medications.stream().forEach(x->{
-                if((isDroneAvailableForLoading(drone))) {
+                if((isDroneAvailableForLoading(drone.getSerialNumber()))) {
                     drone.setState(State.LOADING);
                     drone.getMedications().add(x);
                     drone.setWeight(drone.getWeight() + x.getWeight());
@@ -86,60 +86,59 @@ public class DroneServiceImpl2 implements DroneService{
 
     }
 
-    public boolean isDroneAvailableForLoading(Drone drone){
-        if(getDroneWeight(drone) >= 500 || checkDroneBatteryLevel(drone) < 25) {
+    public boolean isDroneAvailableForLoading(String serialNumber){
+        if(getDroneWeight(serialNumber) >= 500 || checkDroneBatteryLevel(serialNumber) < 25) {
             log.info("Please check drone limit capacity and/or battery level");
             return false;
         }
         return true;
     }
-    public int checkDroneBatteryLevel(Drone drone){
-        return getDroneBatteryLevel(drone);
+    public int checkDroneBatteryLevel(String serialNumber){
+        return getDroneBatteryLevel(serialNumber);
        // log.info("Drone with serial number {} has a battery level of {}", drone.getSerialNumber(), batteryCapacity);
 
     }
-    public Integer getDroneWeight(Drone drone){
-      return drone.getWeight();
+    public Integer getDroneWeight(String serialNumber){
+        Optional<Drone> optional = droneRepo.findById(serialNumber);
+      return optional.get().getWeight();
     }
 
-    public int getDroneBatteryLevel(Drone drone){
-        Optional optional = droneRepo.findById(drone.getSerialNumber());
+    public int getDroneBatteryLevel(String serialNumber){
+        Optional <Drone>optional = droneRepo.findById(serialNumber);
         if(optional.isPresent()){
+            Drone drone = optional.get();
         String batteryLevel = drone.getBatteryCapacity().substring(0, drone.getBatteryCapacity().length()-1);
          return  Integer.parseInt(batteryLevel);
         }
-        else throw new NullPointerException("drone with serial number "+ drone.getSerialNumber() + " not found");
+        else throw new NullPointerException("drone with serial number "+ serialNumber + " not found");
     }
 
-    // public void setDroneBatteryLimit(Drone drone){
-    //     //Calendar now = Calendar.getInstance();
-    //     while(getDroneBatteryLevel(drone) > 0){
-    //         try {
-    //             if (drone.getState().equals(State.IDLE)) {
-    //                 Thread.sleep(50000000);
-    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 1);
-    //             }
-    //             if (drone.getState().equals(State.LOADING)) {
-    //                 Thread.sleep(5000);
-    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 3);
-    //             }
-    //             if (drone.getState().equals(State.LOADED)) {
-    //                 Thread.sleep(5000);
-    //                 drone.setBatteryCapacity(getDroneBatteryLevel(drone) - 4);
-    //             }
-    //             droneRepo.save(drone);
-    //         }catch (Exception ex){}
-    //     }
-    //     ScheduledTasks task= new ScheduledTasks(drone);
-    //     task.reportDroneBatteryCapacity();
-    // }
+    
     
 
     @Override
     public List<Drone> getAllDrones() {
-        // TODO Auto-generated method stub
+       
         return droneRepo.findAll();
-       // throw new UnsupportedOperationException("Unimplemented method 'getAllDrones'");
+       
+    }
+
+    @Override
+    public List<DroneRespnse> checkAvailaDronesForLoading() {
+        // TODO Auto-generated method stub
+        List<Drone>drones = droneRepo.findAll();
+        List<DroneRespnse> respnses =  drones.stream().filter(drone -> drone.getState().equals(State.IDLE) || drone.getState().equals(State.LOADING))
+        .map(drone -> new DroneRespnse(drone.getSerialNumber(), drone.getWeight(), drone.getBatteryCapacity(), drone.getState(), drone.getModel())).toList();
+        return respnses;
+        
+    }
+
+    @Override
+    public String checkDroneBatteryLevelForDrone(String serialNumber) {
+        // TODO Auto-generated method stub
+        
+        return String.valueOf(checkDroneBatteryLevel(serialNumber)) +"%";
+        
     }
 
 }
