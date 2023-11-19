@@ -4,29 +4,46 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.musalasoft.droneservice.Models.Drone;
+import com.musalasoft.droneservice.Models.State;
+import com.musalasoft.droneservice.Repo.DroneRepo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ScheduledTasks {
-    Drone drone;
-    public ScheduledTasks(){}
-     public ScheduledTasks(Drone drone){
-        this.drone = drone;
-     }
+    @Autowired
+DroneRepo droneRepo;
 
-    private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
+private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(fixedRate = 5000)
-    public void reportDroneBatteryCapacity(){
+    
+    @Scheduled(cron = "0 */10 * ? * *")
+    public void setDroneBatteryLimit() {
+        Iterable<Drone>drones = droneRepo.findAll();
+        for(Drone drone : drones){
+            int batteryLevel = Integer.parseInt(drone.getBatteryCapacity().substring(0, drone.getBatteryCapacity().length()-1));
+             if (drone.getState().equals(State.IDLE)) {
+                    
+                     drone.setBatteryCapacity(batteryLevel - 1);
+                 }
+                 if (drone.getState().equals(State.LOADING)) {
+                     
+                     drone.setBatteryCapacity(batteryLevel - 3);
+                 }
+                 if (drone.getState().equals(State.LOADED)) {
+                     
+                     drone.setBatteryCapacity(batteryLevel - 4);
+                 }
+                 droneRepo.save(drone);
+                log.info("Drone with serial number {} has a battery capacity of {} as at {}",drone.getSerialNumber(),drone.getBatteryCapacity(), dateFormat.format(new Date()));
         
-        
-        if(this.drone != null)
-        log.info("Drone with serial number {} has a battery capacity of {} as at {}",this.drone.getSerialNumber(),this.drone.getBatteryCapacity(), dateFormat.format(new Date()));
-        
+        }
+
     }
 }

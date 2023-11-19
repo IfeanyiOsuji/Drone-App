@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Drone {
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", length = 100)
     private String serialNumber;
 
 
