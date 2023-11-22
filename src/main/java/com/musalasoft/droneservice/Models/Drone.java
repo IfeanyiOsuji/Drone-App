@@ -25,14 +25,17 @@ public class Drone {
     private String batteryCapacity;
 
     
-    @NonNull
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     // This is a default state of the drone
     private State state;
     
     @NonNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Model model;
+
     @OneToMany
     private List<Medication2> medications = new ArrayList<>();
 
@@ -91,28 +94,6 @@ public class Drone {
         this.weight = weight;
     }
 
-    // public void setDroneBatteryLimit(){
-    //     int batterLimit = Integer.parseInt(this.getBatteryCapacity().substring(0, this.getBatteryCapacity().length()-1));
-    //     //Calendar now = Calendar.getInstance();
-    //     while(batterLimit > 0){
-    //         try {
-    //             if (this.getState().equals(State.IDLE)) {
-    //                 Thread.sleep(50000000);
-    //                 this.setBatteryCapacity(batterLimit - 1);
-    //             }
-    //             if (this.getState().equals(State.LOADING)) {
-    //                 Thread.sleep(5000);
-    //                 this.setBatteryCapacity(batterLimit - 3);
-    //             }
-    //             if (this.getState().equals(State.LOADED)) {
-    //                 Thread.sleep(5000);
-    //                 this.setBatteryCapacity(batterLimit - 4);
-    //             }
-    //         }catch (Exception ex){}
-    //     }
-    //     ScheduledTasks task= new ScheduledTasks(this);
-    //     task.reportDroneBatteryCapacity();
-    // }
 
     @Override
     public String toString() {
