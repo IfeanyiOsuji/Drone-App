@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <File name="EventLogFile" fileName="event_log.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="EventLogFile"/>
+        </Root>
+    </Loggers>
+    <RollingFile name="RollingFile" fileName="logs/app.log"
+             filePattern="logs/app-%d{MM-dd-yyyy}-%i.log.gz">
+    <PatternLayout>
+        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+    </PatternLayout>
+    <Policies>
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+    </Policies>
+    <DefaultRolloverStrategy max="10"/>
+</RollingFile>
+
+</Configuration>
